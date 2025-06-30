@@ -1,30 +1,11 @@
 using System;
 
-public class Kirchhoff
+namespace LinearAlgebra
 {
-    /*
-    public static void Main(string[] args)
+    public class Kirchhoff
     {
-        foreach (var v in result){
-            Console.WriteLine(v);
-        }
-    }
-    */
-    
-    public static float[,] A = new float[,]
-    {
-        {1,1,0,1,0,0},
-        {-1,0,1,0,0,1},
-        {0,-1,-1,0,1,0},
-        {0,0,0,-1,-1,-1},
-        {0,8,-6,0,0,0},
-        {0,8,0,0,1,-3},
-        {0,0,0,10,0,-3},
-        {0,0,-6,10,-1,0},
-    };
-    public static float[] C = new float[] {0,0,0,0,20,20,20,20};
-    public static float[] result = SolveLeastSquares(A, C);
-
+    //public static float[] b = SolveLeastSquares(A, C);
+    //A*b=C
     public static float[] SolveLeastSquares(float[,] A, float[] C)
     {
         int m = A.GetLength(0); // Rows
@@ -67,4 +48,5 @@ public class Kirchhoff
         }
         return result;
     }
+}
 }
