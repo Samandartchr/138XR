@@ -2,7 +2,7 @@ using System;
 
 namespace LinearAlgebra
 {
-    public class Kirchhoff
+    public class MatrixSolver
     {
     //public static float[] b = SolveLeastSquares(A, C);
     //A*b=C
