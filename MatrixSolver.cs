@@ -2,7 +2,7 @@ using System;
 
 namespace LinearAlgebra
 {
-    public class MatrixSolver
+    public static class MatrixSolver
     {
         
         public static float[] SolveLeastSquares(float[,] A, float[] C)

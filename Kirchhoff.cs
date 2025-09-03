@@ -5,11 +5,9 @@ using Tools;
 
 namespace PhysicsLaws
 {
-    public class Kirchhoff
+    public static class Kirchhoff
     {
-        public Graph graph = new Graph();
-
-        public float[,] BuildMatrix()
+        public static float[,] BuildMatrix(Graph graph)
         {
             int e = graph.EdgeCount;
             var Loops = graph.FindLoops(0, 1);
@@ -19,9 +17,27 @@ namespace PhysicsLaws
             float[,] Matrix;
 
             if (l >= e)
+            {
                 Matrix = new float[l, e];
+                for (int i = 0; i < l; i++)
+                {
+                    for (int j = 0; j < e; j++)
+                    {
+                        Matrix[i, j] = 0;
+                    }
+                }
+            }
             else
+            {
                 Matrix = new float[l + n, e];
+                for (int i = 0; i < l + n; i++)
+                {
+                    for (int j = 0; j < e; j++)
+                    {
+                        Matrix[i, j] = 0;
+                    }
+                }
+            }
 
             // Fill KVL part
             for (int i = 0; i < l; i++)
@@ -33,9 +49,15 @@ namespace PhysicsLaws
                     int index = graph.EdgeIndex(from, to);
 
                     if (from < to)
-                        Matrix[i, index] = graph.Nodes[from][to].resistance;
+                    {
+                        var edge = graph.Nodes[from].Find(e => e.target == to);
+                        Matrix[i, index] = edge.resistance; //here is a bug
+                    }
                     else
-                        Matrix[i, index] = -graph.Nodes[to][from].resistance;
+                    {
+                        var edge = graph.Nodes[to].Find(e => e.target == from);
+                        Matrix[i, index] = -edge.resistance;
+                    }
                 }
             }
 
@@ -64,7 +86,7 @@ namespace PhysicsLaws
             return Matrix;
         }
 
-        public float[] BuildValues(float Voltage)
+        public static float[] BuildValues(Graph graph, float Voltage)
         {
             int e = graph.EdgeCount;
             var Loops = graph.FindLoops(0, 1);
@@ -88,10 +110,10 @@ namespace PhysicsLaws
             return Values;
         }
 
-        public float[] Currents(float Voltage)
+        public static float[] Currents(Graph graph, float Voltage)
         {
-            float[,] matrix = BuildMatrix();
-            float[] values = BuildValues(Voltage);
+            float[,] matrix = BuildMatrix(graph);
+            float[] values = BuildValues(graph, Voltage);
             return MatrixSolver.SolveLeastSquares(matrix, values);
         }
     }

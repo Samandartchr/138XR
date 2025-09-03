@@ -1,9 +1,12 @@
 using UnityEngine;
+using System.Linq;
+using System;
+using UnityEngine.Math;
 
 public class DCPowerSupply : MonoBehaviour
 {
-    public Transform positive;
-    public Transform negative;
+    public Transform ZerothNode;
+    public Transform FirstNode;
     public Transform voltageChanger;
 
     public enum voltageChangerType { Rotation, Slider }

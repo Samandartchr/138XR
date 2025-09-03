@@ -7,6 +7,9 @@ namespace Tools
     public class Graph
     {
         public Dictionary<int, List<(int target, float resistance)>> Nodes = new();
+        private Dictionary<(int, int), int> edgeIndices = new();
+        private int nextEdgeIndex = 0;
+
         public int NodeCount => Nodes.Count;
         public int EdgeCount
         {
@@ -26,39 +29,8 @@ namespace Tools
         }
         public int EdgeIndex(int from, int to)
         {
-            if (from < to)
-            {
-                int index = 0;
-                for (int i = 0; i < Nodes[from].Count - 1; i++)
-                {
-                    index += Nodes[i].Count;
-                }
-                foreach (var i in Nodes[from])
-                {
-                    if (i.target == to)
-                    {
-                        return index;
-                    }
-                    index++; // Might be displaced
-                }
-            }
-            else if (from > to)
-            {
-                int index = 0;
-                for (int i = 0; i < Nodes[to].Count - 1; i++)
-                {
-                    index += Nodes[i].Count;
-                }
-                foreach (var i in Nodes[to])
-                {
-                    if (i.target == from)
-                    {
-                        return index;
-                    }
-                    index++; // Might be displaced
-                }
-            }
-            return -1;
+            var key = from < to ? (from, to) : (to, from);
+            return edgeIndices.TryGetValue(key, out var idx) ? idx : -1;
         }
 
         public void AddNode(int nodeId)
@@ -75,6 +47,12 @@ namespace Tools
             AddNode(to);
             Nodes[from].Add((to, resistance));
             Nodes[to].Add((from, resistance));
+
+            var key = from < to ? (from, to) : (to, from);
+            if (!edgeIndices.ContainsKey(key))
+            {
+                edgeIndices[key] = nextEdgeIndex++;
+            }
         }
 
         public void RemoveNode(int nodeId) // It is less used
@@ -138,7 +116,7 @@ namespace Tools
                 JoinNodes(to, from);
             }
         }
-        
+
 
         public List<List<int>> FindLoops(int Start, int End)
         {
@@ -169,7 +147,21 @@ namespace Tools
             }
 
             DFS(Start);
+            allPaths.RemoveAt(0);
             return allPaths;
+        }
+
+        public void PrintGraph()
+        {
+            foreach (var kvp in Nodes)
+            {
+                Console.Write($"Node {kvp.Key}: ");
+                foreach (var (target, resistance) in kvp.Value)
+                {
+                    Console.Write($"-> Node {target} (R={resistance}) ");
+                }
+                Console.WriteLine();
+            }
         }
 
     }
