@@ -61,13 +61,12 @@ public class ElectricCircuit : MonoBehaviour
     {
         nodes.Clear();
         circuit.Nodes.Clear();
-
+        FlatSet.Clear();
         circuit.AddEdge(0, 1, ResistanceOfDCPowerSupply);
     }
 
     private void ListToGraph()
     {
-        circuit.Nodes.Clear();
 
         for (int i = 0; i < nodes.Count; i++)
         {
@@ -93,8 +92,7 @@ public class ElectricCircuit : MonoBehaviour
 
     private void ListBuilder(Transform portA, Transform portB)
     {
-        nodes.Clear();
-        FlatSet.Clear();
+        Initializer();
         List<Transform> visited = new List<Transform>();
         List<Transform> executionOrder = new List<Transform>();
 
@@ -109,7 +107,7 @@ public class ElectricCircuit : MonoBehaviour
             {
                 List<Transform> newPorts = port.GetPortsSameNode();
                 nodes.Add(newPorts);
-                visited.Add(port);
+                visited.AddRange(newPorts);
                 executionOrderNew.AddRange(newPorts);
             }
 
